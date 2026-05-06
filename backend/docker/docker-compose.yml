@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: totem-fastfood-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: totem_fastfood_db
+      POSTGRES_USER: totem_user
+      POSTGRES_PASSWORD: totem_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
