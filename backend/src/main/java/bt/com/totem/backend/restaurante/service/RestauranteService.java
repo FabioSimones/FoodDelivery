@@ -4,6 +4,8 @@ import bt.com.totem.backend.restaurante.dto.RestauranteCriacaoRequest;
 import bt.com.totem.backend.restaurante.dto.RestauranteResponse;
 import bt.com.totem.backend.restaurante.entity.Restaurante;
 import bt.com.totem.backend.restaurante.repository.RestauranteRepository;
+import bt.com.totem.backend.shared.exception.ConflitoException;
+import bt.com.totem.backend.shared.exception.RegraNegocioException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,10 @@ public class RestauranteService {
         String cnpjNormalizado = normalizarCnpj(request.cnpj());
 
         if (cnpjNormalizado != null && restauranteRepository.existsByCnpj(cnpjNormalizado)) {
-            throw new IllegalArgumentException("Já existe um restaurante cadastrado com este CNPJ.");
+            throw new ConflitoException(
+                    "CNPJ_DUPLICADO",
+                    "Já existe um restaurante cadastrado com este CNPJ."
+            );
         }
 
         Restaurante restaurante = Restaurante.builder()
@@ -41,7 +46,10 @@ public class RestauranteService {
         String somenteNumeros = cnpj.replaceAll("\\D", "");
 
         if (somenteNumeros.length() != 14) {
-            throw new IllegalArgumentException("CNPJ deve possuir 14 dígitos.");
+            throw new RegraNegocioException(
+                    "CNPJ_INVALIDO",
+                    "CNPJ deve possuir 14 dígitos."
+            );
         }
 
         return somenteNumeros;
