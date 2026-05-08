@@ -25,6 +25,15 @@ public interface CategoriaRepository extends JpaRepository<Categoria, UUID> {
             """)
     List<Categoria> listarPorRestauranteOrdenadas(UUID restauranteId);
 
+    @Query("""
+        SELECT c FROM Categoria c
+        JOIN FETCH c.restaurante r
+        WHERE r.id = :restauranteId
+        AND c.ativa = true
+        ORDER BY c.ordemExibicao ASC, c.nome ASC
+        """)
+    List<Categoria> listarAtivasPorRestauranteOrdenadas(UUID restauranteId);
+
     boolean existsByRestaurante_IdAndNomeIgnoreCase(UUID restauranteId, String nome);
 
     boolean existsByRestaurante_IdAndNomeIgnoreCaseAndIdNot(

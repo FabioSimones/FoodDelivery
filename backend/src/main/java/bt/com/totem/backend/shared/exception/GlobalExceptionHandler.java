@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -176,6 +178,50 @@ public class GlobalExceptionHandler {
                 request.getRequestURI(),
                 LocalDateTime.now(),
                 List.of()
+        );
+
+        return ResponseEntity.status(status).body(response);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErroResponse> tratarParametroObrigatorio(
+            MissingServletRequestParameterException ex,
+            HttpServletRequest request
+    ) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        ErroResponse response = new ErroResponse(
+                "PARAMETRO_OBRIGATORIO",
+                "Um parâmetro obrigatório não foi informado.",
+                status.value(),
+                request.getRequestURI(),
+                LocalDateTime.now(),
+                List.of(new ErroCampo(
+                        ex.getParameterName(),
+                        "O parâmetro " + ex.getParameterName() + " é obrigatório."
+                ))
+        );
+
+        return ResponseEntity.status(status).body(response);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErroResponse> tratarParametroInvalido(
+            MethodArgumentTypeMismatchException ex,
+            HttpServletRequest request
+    ) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        ErroResponse response = new ErroResponse(
+                "PARAMETRO_INVALIDO",
+                "Um parâmetro informado possui formato inválido.",
+                status.value(),
+                request.getRequestURI(),
+                LocalDateTime.now(),
+                List.of(new ErroCampo(
+                        ex.getName(),
+                        "O parâmetro " + ex.getName() + " possui valor inválido."
+                ))
         );
 
         return ResponseEntity.status(status).body(response);

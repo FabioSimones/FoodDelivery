@@ -35,6 +35,17 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
             """)
     List<Produto> listarPorCategoriaOrdenados(UUID categoriaId);
 
+    @Query("""
+        SELECT p FROM Produto p
+        JOIN FETCH p.restaurante r
+        JOIN FETCH p.categoria c
+        WHERE r.id = :restauranteId
+        AND c.ativa = true
+        AND p.disponivel = true
+        ORDER BY c.ordemExibicao ASC, p.ordemExibicao ASC, p.nome ASC
+        """)
+    List<Produto> listarDisponiveisParaTotem(UUID restauranteId);
+
     boolean existsByRestaurante_IdAndNomeIgnoreCase(UUID restauranteId, String nome);
 
     boolean existsByRestaurante_IdAndNomeIgnoreCaseAndIdNot(
