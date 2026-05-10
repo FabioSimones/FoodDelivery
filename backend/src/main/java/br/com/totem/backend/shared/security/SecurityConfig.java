@@ -19,7 +19,8 @@ public class SecurityConfig {
                                 "/api/admin/restaurantes/**",
                                 "/api/admin/categorias/**",
                                 "/api/admin/produtos/**",
-                                "/api/totem/**"
+                                "/api/totem/**",
+                                "/api/caixa/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

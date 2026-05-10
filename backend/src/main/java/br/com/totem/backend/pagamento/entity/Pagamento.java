@@ -58,6 +58,12 @@ public class Pagamento {
     @Column(name = "cancelado_em")
     private LocalDateTime canceladoEm;
 
+    @Column(length = 255)
+    private String observacao;
+
+    @Column(name = "motivo_cancelamento", length = 255)
+    private String motivoCancelamento;
+
     @PrePersist
     public void prePersist() {
         this.id = UUID.randomUUID();
