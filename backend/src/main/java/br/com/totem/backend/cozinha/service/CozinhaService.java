@@ -8,7 +8,7 @@ import br.com.totem.backend.pedido.entity.ItemPedido;
 import br.com.totem.backend.pedido.entity.Pedido;
 import br.com.totem.backend.pedido.enums.StatusPedido;
 import br.com.totem.backend.pedido.historico.entity.HistoricoStatusPedido;
-import br.com.totem.backend.pedido.historico.repository.HistoricoStatusPedidoRepository;
+import br.com.totem.backend.pedido.historico.service.HistoricoStatusPedidoService;
 import br.com.totem.backend.pedido.repository.PedidoRepository;
 import br.com.totem.backend.restaurante.repository.RestauranteRepository;
 import br.com.totem.backend.shared.exception.RecursoNaoEncontradoException;
@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +26,7 @@ public class CozinhaService {
 
     private final PedidoRepository pedidoRepository;
     private final RestauranteRepository restauranteRepository;
-    private final HistoricoStatusPedidoRepository historicoStatusPedidoRepository;
+    private final HistoricoStatusPedidoService historicoStatusPedidoService;
 
     @Transactional(readOnly = true)
     public List<CozinhaPedidoResponse> listarPedidos(UUID restauranteId, StatusPedido statusPedido) {
@@ -171,15 +170,13 @@ public class CozinhaService {
             StatusPedido statusNovo,
             String observacao
     ) {
-        HistoricoStatusPedido historico = HistoricoStatusPedido.builder()
-                .pedido(pedido)
-                .statusAnterior(statusAnterior)
-                .statusNovo(statusNovo)
-                .origem("COZINHA")
-                .observacao(observacao)
-                .build();
-
-        historicoStatusPedidoRepository.save(historico);
+        historicoStatusPedidoService.registrar(
+                pedido,
+                statusAnterior,
+                statusNovo,
+                "COZINHA",
+                observacao
+        );
     }
 
     private CozinhaPedidoResponse toPedidoResponse(Pedido pedido) {

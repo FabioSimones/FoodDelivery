@@ -10,6 +10,7 @@ import br.com.totem.backend.pagamento.enums.StatusPagamento;
 import br.com.totem.backend.pagamento.repository.PagamentoRepository;
 import br.com.totem.backend.pedido.entity.Pedido;
 import br.com.totem.backend.pedido.enums.StatusPedido;
+import br.com.totem.backend.pedido.historico.service.HistoricoStatusPedidoService;
 import br.com.totem.backend.pedido.repository.PedidoRepository;
 import br.com.totem.backend.shared.exception.RecursoNaoEncontradoException;
 import br.com.totem.backend.shared.exception.RegraNegocioException;
@@ -29,6 +30,7 @@ public class CaixaService {
 
     private final PagamentoRepository pagamentoRepository;
     private final PedidoRepository pedidoRepository;
+    private final HistoricoStatusPedidoService historicoStatusPedidoService;
 
     @Transactional(readOnly = true)
     public List<CaixaPedidoPendenteResponse> listarPedidosPendentes() {
@@ -48,6 +50,8 @@ public class CaixaService {
             CaixaConfirmarPagamentoRequest request
     ) {
         Pedido pedido = buscarPedido(pedidoId);
+
+        StatusPedido statusAnterior = pedido.getStatusPedido();
 
         validarPedidoAguardandoPagamentoDinheiro(pedido);
 
@@ -75,6 +79,14 @@ public class CaixaService {
         pagamentoRepository.save(pagamento);
         pedidoRepository.save(pedido);
 
+        historicoStatusPedidoService.registrar(
+                pedido,
+                statusAnterior,
+                StatusPedido.ENVIADO_PARA_COZINHA,
+                "CAIXA",
+                "Pagamento em dinheiro confirmado pelo caixa."
+        );
+
         return toOperacaoResponse(
                 pagamento,
                 request.valorRecebido(),
@@ -89,23 +101,35 @@ public class CaixaService {
     ) {
         Pedido pedido = buscarPedido(pedidoId);
 
+        StatusPedido statusAnterior = pedido.getStatusPedido();
+
         validarPedidoAguardandoPagamentoDinheiro(pedido);
 
         Pagamento pagamento = buscarPagamentoDinheiroPendente(pedidoId);
+
+        String motivoCancelamento = normalizarTextoObrigatorio(
+                request.motivo(),
+                "O motivo do cancelamento é obrigatório."
+        );
 
         LocalDateTime agora = LocalDateTime.now();
 
         pagamento.setStatusPagamento(StatusPagamento.CANCELADO);
         pagamento.setCanceladoEm(agora);
-        pagamento.setMotivoCancelamento(normalizarTextoObrigatorio(
-                request.motivo(),
-                "O motivo do cancelamento é obrigatório."
-        ));
+        pagamento.setMotivoCancelamento(motivoCancelamento);
 
         pedido.setStatusPedido(StatusPedido.CANCELADO);
 
         pagamentoRepository.save(pagamento);
         pedidoRepository.save(pedido);
+
+        historicoStatusPedidoService.registrar(
+                pedido,
+                statusAnterior,
+                StatusPedido.CANCELADO,
+                "CAIXA",
+                "Pedido cancelado pelo caixa. Motivo: " + motivoCancelamento
+        );
 
         return toOperacaoResponse(
                 pagamento,

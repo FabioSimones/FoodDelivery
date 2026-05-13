@@ -9,6 +9,7 @@ import br.com.totem.backend.pedido.dto.PedidoResponse;
 import br.com.totem.backend.pedido.entity.ItemPedido;
 import br.com.totem.backend.pedido.entity.Pedido;
 import br.com.totem.backend.pedido.enums.StatusPedido;
+import br.com.totem.backend.pedido.historico.service.HistoricoStatusPedidoService;
 import br.com.totem.backend.pedido.repository.PedidoRepository;
 import br.com.totem.backend.restaurante.entity.Restaurante;
 import br.com.totem.backend.restaurante.repository.RestauranteRepository;
@@ -34,6 +35,7 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final RestauranteRepository restauranteRepository;
     private final ProdutoRepository produtoRepository;
+    private final HistoricoStatusPedidoService historicoStatusPedidoService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -97,7 +99,16 @@ public class PedidoService {
 
         Pedido pedidoSalvo = pedidoRepository.save(pedido);
 
+        historicoStatusPedidoService.registrar(
+                pedidoSalvo,
+                null,
+                StatusPedido.CRIADO,
+                "TOTEM",
+                "Pedido criado pelo totem."
+        );
+
         return toResponse(pedidoSalvo);
+
     }
 
     @Transactional(readOnly = true)

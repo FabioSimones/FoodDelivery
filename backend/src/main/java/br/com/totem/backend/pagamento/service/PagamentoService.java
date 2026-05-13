@@ -11,6 +11,7 @@ import br.com.totem.backend.pagamento.provider.PagamentoProviderResponse;
 import br.com.totem.backend.pagamento.repository.PagamentoRepository;
 import br.com.totem.backend.pedido.entity.Pedido;
 import br.com.totem.backend.pedido.enums.StatusPedido;
+import br.com.totem.backend.pedido.historico.service.HistoricoStatusPedidoService;
 import br.com.totem.backend.pedido.repository.PedidoRepository;
 import br.com.totem.backend.shared.exception.ConflitoException;
 import br.com.totem.backend.shared.exception.RecursoNaoEncontradoException;
@@ -30,6 +31,7 @@ public class PagamentoService {
     private final PagamentoRepository pagamentoRepository;
     private final PedidoRepository pedidoRepository;
     private final PagamentoProvider pagamentoProvider;
+    private final HistoricoStatusPedidoService historicoStatusPedidoService;
 
     @Transactional
     public PagamentoResponse iniciarPagamento(UUID pedidoId, PagamentoIniciarRequest request) {
@@ -59,7 +61,17 @@ public class PagamentoService {
                 .pagoEm(definirDataPagamento(providerResponse.statusPagamento()))
                 .build();
 
+        StatusPedido statusAnterior = pedido.getStatusPedido();
+
         atualizarStatusPedido(pedido, request.formaPagamento(), providerResponse.statusPagamento());
+
+        registrarHistoricoSeStatusMudou(
+                pedido,
+                statusAnterior,
+                pedido.getStatusPedido(),
+                "PAGAMENTO",
+                "Pagamento iniciado com a forma " + request.formaPagamento() + "."
+        );
 
         Pagamento pagamentoSalvo = pagamentoRepository.save(pagamento);
         pedidoRepository.save(pedido);
@@ -181,5 +193,23 @@ public class PagamentoService {
                 pagamento.getPagoEm(),
                 pagamento.getCanceladoEm()
         );
+    }
+
+    private void registrarHistoricoSeStatusMudou(
+            Pedido pedido,
+            StatusPedido statusAnterior,
+            StatusPedido statusNovo,
+            String origem,
+            String observacao
+    ) {
+        if (statusAnterior != statusNovo) {
+            historicoStatusPedidoService.registrar(
+                    pedido,
+                    statusAnterior,
+                    statusNovo,
+                    origem,
+                    observacao
+            );
+        }
     }
 }
