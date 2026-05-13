@@ -1,2 +1,17 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import "bootstrap-icons/font/bootstrap-icons.css";
+@import "ngx-toastr/toastr";
+
+
+.toast-container .ngx-toastr {
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+}
+
+.toast-title {
+  font-weight: 700;
+}
+
+.toast-message {
+  font-size: 0.95rem;
+}
