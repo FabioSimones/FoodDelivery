@@ -1,0 +1,291 @@
+.admin-shell {
+  min-height: 100vh;
+  display: flex;
+  background: #f5f7fb;
+}
+
+.sidebar {
+  width: 280px;
+  min-height: 100vh;
+  background: #111827;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease, transform 0.25s ease;
+  position: sticky;
+  top: 0;
+}
+
+.sidebar-header {
+  padding: 24px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0d6efd;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+
+  strong {
+    font-size: 1.05rem;
+  }
+
+  span {
+    font-size: 0.82rem;
+    color: #9ca3af;
+  }
+}
+
+.sidebar-nav {
+  padding: 18px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.nav-item {
+  height: 46px;
+  border-radius: 14px;
+  padding: 0 14px;
+  color: #d1d5db;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  i {
+    font-size: 1.15rem;
+    width: 22px;
+    text-align: center;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+  }
+
+  &.active {
+    background: #0d6efd;
+    color: #ffffff;
+  }
+}
+
+.sidebar-footer {
+  padding: 16px;
+}
+
+.system-badge {
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(13, 110, 253, 0.14);
+  color: #bfdbfe;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.main-area {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  height: 76px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.topbar-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0;
+  color: #111827;
+}
+
+.topbar-subtitle {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.icon-button {
+  width: 42px;
+  height: 42px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #111827;
+
+  i {
+    font-size: 1.4rem;
+  }
+
+  &:hover {
+    background: #f3f4f6;
+  }
+}
+
+.user-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #eef4ff;
+  color: #0d6efd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.user-info {
+  line-height: 1.1;
+
+  strong {
+    display: block;
+    font-size: 0.92rem;
+    color: #111827;
+  }
+
+  span {
+    display: block;
+    margin-top: 3px;
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+}
+
+.content-area {
+  padding: 28px;
+  flex: 1;
+}
+
+.sidebar-collapsed {
+  .sidebar {
+    width: 88px;
+  }
+
+  .brand-text,
+  .nav-item span,
+  .system-badge span {
+    display: none;
+  }
+
+  .nav-item {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .system-badge {
+    justify-content: center;
+  }
+}
+
+.mobile-overlay {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .sidebar {
+    position: fixed;
+    z-index: 40;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .mobile-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.55);
+    z-index: 30;
+  }
+
+  .topbar {
+    padding: 0 16px;
+  }
+
+  .topbar-subtitle {
+    display: none;
+  }
+
+  .content-area {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 575px) {
+  .topbar {
+    height: auto;
+    min-height: 72px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .topbar-title {
+    font-size: 1rem;
+  }
+
+  .btn {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}

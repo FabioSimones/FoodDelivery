@@ -1,0 +1,106 @@
+<div
+  class="admin-shell"
+  [class.sidebar-collapsed]="sidebarFechada"
+>
+  <div
+    class="mobile-overlay"
+    *ngIf="menuMobileAberto"
+    (click)="fecharMenuMobile()"
+  ></div>
+
+  <aside
+    class="sidebar"
+    [class.mobile-open]="menuMobileAberto"
+  >
+    <div class="sidebar-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="bi bi-shop"></i>
+        </div>
+
+        <div class="brand-text">
+          <strong>Totem</strong>
+          <span>Fast Food</span>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a
+        *ngFor="let item of menuPermitido"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        class="nav-item"
+        (click)="fecharMenuMobile()"
+      >
+        <i [class]="item.icon"></i>
+        <span>{{ item.label }}</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="system-badge">
+        <i class="bi bi-shield-check"></i>
+        <span>MVP Seguro</span>
+      </div>
+    </div>
+  </aside>
+
+  <section class="main-area">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button
+          type="button"
+          class="icon-button d-none d-lg-inline-flex"
+          (click)="alternarSidebar()"
+          aria-label="Alternar menu lateral"
+        >
+          <i class="bi bi-list"></i>
+        </button>
+
+        <button
+          type="button"
+          class="icon-button d-inline-flex d-lg-none"
+          (click)="alternarMenuMobile()"
+          aria-label="Abrir menu lateral"
+        >
+          <i class="bi bi-list"></i>
+        </button>
+
+        <div>
+          <h1 class="topbar-title">Painel Administrativo</h1>
+          <p class="topbar-subtitle">
+            Gestão de restaurante, cardápio, pedidos, caixa e cozinha
+          </p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="user-box">
+          <div class="user-avatar">
+            {{ usuario?.nome?.charAt(0) || 'U' }}
+          </div>
+
+          <div class="user-info d-none d-sm-block">
+            <strong>{{ usuario?.nome }}</strong>
+            <span>{{ usuario?.perfil }}</span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-outline-danger btn-sm"
+          (click)="sair()"
+        >
+          <i class="bi bi-box-arrow-right me-1"></i>
+          Sair
+        </button>
+      </div>
+    </header>
+
+    <main class="content-area">
+      <router-outlet></router-outlet>
+    </main>
+  </section>
+</div>

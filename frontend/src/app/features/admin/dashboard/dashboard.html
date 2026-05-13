@@ -1,39 +1,48 @@
-<div class="dashboard-page">
-  <nav class="navbar navbar-expand-lg bg-white border-bottom px-4">
-    <span class="navbar-brand fw-bold">
-      Totem Fast Food
-    </span>
+<div class="page-header">
+  <div>
+    <h2>Dashboard</h2>
+    <p>Visão geral operacional do sistema de autoatendimento.</p>
+  </div>
+</div>
 
-    <div class="ms-auto d-flex align-items-center gap-3">
-      <div class="text-end">
-        <div class="fw-semibold">
-          {{ usuario?.nome }}
-        </div>
-        <div class="small text-muted">
-          {{ usuario?.perfil }}
-        </div>
-      </div>
-
-      <button
-        type="button"
-        class="btn btn-outline-danger"
-        (click)="sair()"
-      >
-        Sair
-      </button>
+<div class="row g-3">
+  <div class="col-12 col-md-6 col-xl-3">
+    <div class="metric-card">
+      <span>Restaurantes</span>
+      <strong>--</strong>
+      <small>Unidades cadastradas</small>
     </div>
-  </nav>
+  </div>
 
-  <main class="container py-5">
-    <div class="p-4 bg-white rounded-4 shadow-sm">
-      <h1 class="h3 fw-bold mb-2">
-        Painel Administrativo
-      </h1>
-
-      <p class="text-muted mb-0">
-        Login realizado com sucesso. A partir daqui vamos construir as telas de restaurante,
-        categorias, produtos, caixa, cozinha e totem.
-      </p>
+  <div class="col-12 col-md-6 col-xl-3">
+    <div class="metric-card">
+      <span>Categorias</span>
+      <strong>--</strong>
+      <small>Grupos do cardápio</small>
     </div>
-  </main>
+  </div>
+
+  <div class="col-12 col-md-6 col-xl-3">
+    <div class="metric-card">
+      <span>Produtos</span>
+      <strong>--</strong>
+      <small>Itens disponíveis</small>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-6 col-xl-3">
+    <div class="metric-card">
+      <span>Pedidos</span>
+      <strong>--</strong>
+      <small>Fluxo operacional</small>
+    </div>
+  </div>
+</div>
+
+<div class="content-card mt-4">
+  <h3>Próxima etapa</h3>
+  <p>
+    O painel administrativo está preparado. Agora iniciaremos o CRUD de restaurantes,
+    que é a base para categorias, produtos, usuários e pedidos.
+  </p>
 </div>
